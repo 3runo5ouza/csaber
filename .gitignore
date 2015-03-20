@@ -5,3 +5,4 @@
 /app/Test/*
 /app/Plugin/DebugKit/*
 /app/webroot/img/*
+/nbproject/private/

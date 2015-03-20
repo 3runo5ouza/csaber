@@ -5,13 +5,14 @@ class AtividadesController extends AppController {
 
 	public $components = array('Session', 'Paginator');
 
+	public function beforeFilter() {
+        parent::beforeFilter();
+        $this->Auth->allow('add', 'view', 'index', 'searchTag');
+    }
+
 	public function index() {
-
-
         $this->Atividade->recursive = 0;
 		$this->set('atividades', $this->Atividade->find('all'));
-		
-
 	}
 
 	public function searchTag($id)
@@ -37,6 +38,7 @@ class AtividadesController extends AppController {
 
 	public function add($materia_id = null) {
 		if (!empty($this->data)) {
+
 			$this->Atividade->create();
 			
 			//$data['materia_id']=1;
