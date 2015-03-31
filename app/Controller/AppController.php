@@ -25,8 +25,8 @@ class AppController extends Controller {
     public $components = array(
     	'Auth' => array(
             'loginRedirect' => array(
-                'controller' => 'atividades',
-                'action' => 'index'
+                'controller' => 'usuarios',
+                'action' => 'login'
             ),
             'logoutRedirect' => array(
                 'controller' => 'usuarios',
@@ -35,7 +35,10 @@ class AppController extends Controller {
             ),
             'authenticate' => array(
                 'Form' => array(
-                    'passwordHasher' => 'Blowfish'
+                    'passwordHasher' => 'Blowfish',
+                    'userModel' => 'Usuario',
+                    'password' => 'senha',
+                    'user' => 'nome'
                 )
             )
         ),
@@ -45,8 +48,9 @@ class AppController extends Controller {
     public $helpers = array('Form', 'Html', 'Js');
 
     public function beforeFilter() { 
+        $this->loadModel('Usuario');
 		$this->Auth->userModel = 'Usuario';
-		$this->Auth->loginAction = array('admin' => false, 'controller' => 'usuarios', 'action' => 'add');
+		$this->Auth->loginAction = array('admin' => false, 'controller' => 'usuarios', 'action' => 'login');
         $this->Auth->allow('index', 'view');
 	}
 } 

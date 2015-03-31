@@ -1,6 +1,7 @@
 <?php
 
 App::uses('AppModel', 'Model');
+App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 
 
 class Usuario extends AppModel {
@@ -28,4 +29,15 @@ class Usuario extends AppModel {
             )
         )
     );
+
+    public function beforeSave($options = array()) {
+        if (isset($this->data['Usuario']['senha'])) {
+            $passwordHasher = new BlowfishPasswordHasher();
+            $this->data['Usuario']['senha'] = $passwordHasher->hash(
+                $this->data['Usuario']['senha']
+            );
+        }
+        return true;
+    }
+
 }

@@ -3,7 +3,7 @@
     <fieldset>
         <legend><?php echo __('Criar nova conta'); ?></legend>
         <?php echo $this->Form->input('nome');
-        echo $this->Form->input('senha');
+        echo $this->Form->input('senha', array('type'=>'password'));
         echo $this->Form->input('papel', array(
             'options' => array('admin' => 'Admin', 'author' => 'Author')
         ));

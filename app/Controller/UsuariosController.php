@@ -8,12 +8,28 @@ class UsuariosController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('add');
+        $this->Auth->allow('add', 'logout');
     }
 
+    public function login() {
+        debug($this->Auth->login());
+        if ($this->request->is('post')) {
+            if ($this->Auth->login()) {
+                return $this->redirect($this->Auth->redirectUrl());
+            }
+            $this->Session->setFlash(__('Invalid username or password, try again'));
+        }
+    }
+
+
+    public function logout() {
+        return $this->redirect($this->Auth->logout());
+    }
+
+
     public function index() {
-        $this->User->recursive = 0;
-        $this->set('users', $this->paginate());
+        $this->Usuario->recursive = 0;
+        $this->set('usuarios', $this->paginate());
     }
 
     public function view($id = null) {
@@ -27,9 +43,10 @@ class UsuariosController extends AppController {
     public function add() {
         if ($this->request->is('post')) {
             $this->Usuario->create();
+            // debug($this->Auth->settings); die('foi');
             if ($this->Usuario->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved'));
-                return $this->redirect(array('action' => 'index'));
+                return $this->redirect(array('controller' => 'atividades', 'action' => 'index'));
             }
             $this->Session->setFlash(
                 __('The user could not be saved. Please, try again.')
