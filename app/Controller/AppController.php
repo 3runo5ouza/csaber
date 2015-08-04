@@ -22,11 +22,14 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-    public $components = array(
+
+
+    public $helpers = array('Form', 'Html', 'Js');
+
+   /* public $components = array(
     	'Auth' => array(
-            'loginRedirect' => array(
-                'controller' => 'usuarios',
-                'action' => 'login'
+            'loginAction' => array('controller' => 'usuarios', 'action' => 'login'),
+            'loginRedirect' => array('controller' => 'usuarios', 'action' => 'login'
             ),
             'logoutRedirect' => array(
                 'controller' => 'usuarios',
@@ -37,18 +40,48 @@ class AppController extends Controller {
                 'Form' => array(
                     'passwordHasher' => 'Blowfish',
                     'userModel' => 'Usuario',
-                    'password' => 'senha',
-                    'user' => 'nome'
-                )
+                    'fields' => array(
+                        'username' => 'nome',
+                        'password' => 'senha',
+                    )
+                ),
             )
         ),
     	'DebugKit.Toolbar',
         'Session'
-    );
-    public $helpers = array('Form', 'Html', 'Js');
+    );*/
 
+    public $components = array(
+        'DebugKit.Toolbar',
+        'Session',
+        'Auth' => array(
+            'authenticate' => array(
+                'Form' => array(
+                    'userModel' => 'Usuario',
+                    'fields' => array(
+                        'username' => 'nome',
+                        'password' => 'senha'
+                    )
+                )
+            ),
+            'loginAction' => array('controller' => 'usuarios', 'action' => 'login'), //Not related to the problem
+            'loginRedirect' => array('controller' => 'usuarios', 'action' => 'login'), //Not related to the problem
+            'logoutRedirect' => array('controller' => 'usuarios', 'action' => 'add') //Not related to the problem
+        )
+    );
+
+    public function isAuthorized($user) {
+        debug('opa');
+    // Admin can access every action
+    if (isset($usuario['papel']) && $usuario['papel'] === 'admin') {
+        return true;
+    }
+
+    // Default deny
+    return true;
+}
     public function beforeFilter() { 
-        $this->loadModel('Usuario');
+        //$this->loadModel('Usuario');
 		$this->Auth->userModel = 'Usuario';
 		$this->Auth->loginAction = array('admin' => false, 'controller' => 'usuarios', 'action' => 'login');
         $this->Auth->allow('index', 'view');

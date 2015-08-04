@@ -1,7 +1,7 @@
 <?php
 
 App::uses('AppModel', 'Model');
-App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
+//App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 
 
 class Usuario extends AppModel {
@@ -40,4 +40,13 @@ class Usuario extends AppModel {
         return true;
     }
 
+    public function beforeFind($query = array())
+    {
+        debug($query);
+    }
+
+    public function afterFind($results, $primary = false)
+    {
+        debug($_SESSION);
+    }
 }

@@ -12,11 +12,15 @@ class UsuariosController extends AppController {
     }
 
     public function login() {
-        debug($this->Auth->login());
+        
+        // debug($this->Auth->login());
+        // Security::setHash('blowfish');
+        // debug(Security::hash($this->data['Usuario']['senha']));
         if ($this->request->is('post')) {
             if ($this->Auth->login()) {
                 return $this->redirect($this->Auth->redirectUrl());
             }
+            debug('puta merda');
             $this->Session->setFlash(__('Invalid username or password, try again'));
         }
     }
