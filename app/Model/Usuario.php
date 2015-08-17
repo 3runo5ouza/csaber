@@ -1,7 +1,7 @@
 <?php
 
 App::uses('AppModel', 'Model');
-//App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
+App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 
 
 class Usuario extends AppModel {
@@ -23,7 +23,7 @@ class Usuario extends AppModel {
         ),
         'papel' => array(
             'valid' => array(
-                'rule' => array('inList', array('admin', 'author')),
+                'rule' => array('inList', array('admin', 'autor')),
                 'message' => 'Please enter a valid role',
                 'allowEmpty' => false
             )
@@ -31,16 +31,22 @@ class Usuario extends AppModel {
     );
 
     public function beforeSave($options = array()) {
-        if (isset($this->data['Usuario']['senha'])) {
-            $passwordHasher = new BlowfishPasswordHasher();
-            $this->data['Usuario']['senha'] = $passwordHasher->hash(
-                $this->data['Usuario']['senha']
-            );
+        parent::beforeSave($options);
+        $passwordHasher = new SimplePasswordHasher(array('hashType' => 'sha256'));
+        // hash our password
+        if (!empty($this->data[$this->alias]['senha'])) {
+            $this->data[$this->alias]['senha'] = $passwordHasher->hash($this->data[$this->alias]['senha']);
         }
+        
+        // if we get a new password, hash it
+        if (!empty($this->data[$this->alias]['senha_temp'])) {
+            $this->data[$this->alias]['senha'] = $passwordHasher->hash($this->data[$this->alias]['senha_temp']);
+        }
+
         return true;
     }
 
-    public function beforeFind($query = array())
+    /*public function beforeFind($query = array())
     {
         debug($query);
     }
@@ -48,5 +54,5 @@ class Usuario extends AppModel {
     public function afterFind($results, $primary = false)
     {
         debug($_SESSION);
-    }
+    }*/
 }
