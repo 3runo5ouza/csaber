@@ -7,7 +7,7 @@
 				<?php echo $this->Form->input('ano', $options); ?>
 				<?php echo $this->Form->input('arquivo', array('type'=>'file','div'=>array('class'=>'control-form'))); ?>
 
-				<?php echo $this->Form->input('materias_id', $options); ?>
+				<?php echo $this->Form->input('materia_id', $options); ?>
 				<?php echo $this->Form->input('tag', array('type'=>'text', 'class'=>'form-control','div'=>array('class'=>'form-group'))); ?>
 				<?php echo $this->Form->submit("Salvar Arquivo", array('class' => 'btn btn-primary'));?>
 				<?php echo $this->Form->end()?>

@@ -12,21 +12,29 @@ class Usuario extends AppModel {
         'nome' => array(
             'required' => array(
                 'rule' => array('notEmpty'),
-                'message' => 'A username is required'
+                'message' => 'Um nome de usuário é obrigatório'
             )
         ),
         'senha' => array(
             'required' => array(
                 'rule' => array('notEmpty'),
-                'message' => 'A password is required'
+                'message' => 'A senha é obrigatória'
             )
         ),
         'papel' => array(
             'valid' => array(
                 'rule' => array('inList', array('admin', 'autor')),
-                'message' => 'Please enter a valid role',
+                'message' => 'Entre um papel válido',
                 'allowEmpty' => false
             )
+        )
+    );
+
+    public $hasMany = array(
+        'Atividade' => array(
+            'className' => 'Atividade',
+            'foreignKey' => 'usuario_id',
+            'dependent' => false,
         )
     );
 

@@ -26,35 +26,11 @@ class AppController extends Controller {
 
     public $helpers = array('Form', 'Html', 'Js');
 
-   /* public $components = array(
-    	'Auth' => array(
-            'loginAction' => array('controller' => 'usuarios', 'action' => 'login'),
-            'loginRedirect' => array('controller' => 'usuarios', 'action' => 'login'
-            ),
-            'logoutRedirect' => array(
-                'controller' => 'usuarios',
-                'action' => 'login',
-                'home'
-            ),
-            'authenticate' => array(
-                'Form' => array(
-                    'passwordHasher' => 'Blowfish',
-                    'userModel' => 'Usuario',
-                    'fields' => array(
-                        'username' => 'nome',
-                        'password' => 'senha',
-                    )
-                ),
-            )
-        ),
-    	'DebugKit.Toolbar',
-        'Session'
-    );*/
-
     public $components = array(
         //'DebugKit.Toolbar',
         'Session',
         'Auth' => array(
+            'authError' => 'Você precisa estar logado para ver isso.',
             'authenticate' => array(
                 'Form' => array(
                     'userModel' => 'Usuario',

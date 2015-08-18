@@ -10,10 +10,11 @@ class Atividade extends AppModel {
 	public $belongsTo = array(
 		'Materia' => array(
 			'className' => 'Materia',
-			'foreignKey' => 'materia_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
+			'foreignKey' => 'materia_id'
+		),
+		'Usuario' => array(
+			'className' => 'Usuario',
+			'foreignKey' => 'usuario_id'
 		)
 	);
 
@@ -28,7 +29,6 @@ class Atividade extends AppModel {
 			'className' => 'AtividadeTag'
 		)
 	);
-
 
 	public $hasAndBelongsToMany = array(
 		'Tag' => array(
@@ -49,21 +49,20 @@ class Atividade extends AppModel {
 
 	public function beforeSave($options = array())
 	{
-
 		// faz upload do arquivo antes de salvar os dados da atividade enviada no banco
 		$data = $this->data['Atividade'];
 		if(move_uploaded_file($data['arquivo']['tmp_name'], IMAGES.$data['arquivo']['name']))
-			{
-				$nomeExtensao = explode('.', $data['arquivo']['name']);
-				$this->data['Atividade']['arquivo'] = $nomeExtensao[0];
-				$this->data['Atividade']['ext'] = $nomeExtensao[1];
-			}
-			if(!$data['arquivo']){
-				unset($data['arquivo']);
-			}
+		{
+			$nomeExtensao = explode('.', $data['arquivo']['name']);
+			$this->data['Atividade']['arquivo'] = $nomeExtensao[0];
+			$this->data['Atividade']['ext'] = $nomeExtensao[1];
+			return true;
+		}
+		if(!$data['arquivo']){
+			unset($data['arquivo']);
+			return false;
+		}
 	}
-
-
 
 	public function afterSave($created, $options = array())
     {

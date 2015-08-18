@@ -2,11 +2,26 @@
 <?php //debug($atividade); die() ;?>
 <div class="col-md-6">
 	<h2><?php echo __('Atividade'); ?></h2>
+
+
 		<?php
-			$iframeUrl =$this->webroot;
-			$iframeUrl.='ViewerJS/#../img/';
-			$iframeUrl.=$atividade['Atividade']['arquivo'].'.';
-			$iframeUrl.=$atividade['Atividade']['ext'];
+			//TODO: encontrar todos os formatos suportados pelo viewerjs
+			$suporteViewerJs = array('pdf', 'odt', 'odp');
+			$ehImg=false;
+			if(!in_array($atividade['Atividade']['ext'], $suporteViewerJs))
+				$ehImg=true;
+
+			if(!$ehImg) {
+				$iframeUrl =$this->webroot;
+				$iframeUrl.='ViewerJS/#../img/';
+				$iframeUrl.=$atividade['Atividade']['arquivo'].'.';
+				$iframeUrl.=$atividade['Atividade']['ext'];
+			} else {
+				$iframeUrl =$this->webroot;
+				$iframeUrl.='\/img/';
+				$iframeUrl.=$atividade['Atividade']['arquivo'].'.';
+				$iframeUrl.=$atividade['Atividade']['ext'];
+			}
 		?>
 		<iframe src="<?php echo $iframeUrl; ?>"
 			width='450' height='600'

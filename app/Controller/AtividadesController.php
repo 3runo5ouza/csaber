@@ -32,24 +32,21 @@ class AtividadesController extends AppController {
 		if (!$this->Atividade->exists($id)) {
 			throw new NotFoundException(__('Invalid atividade'));
 		}
+
 		$options = array('conditions' => array('Atividade.' . $this->Atividade->primaryKey => $id));
 		$this->set('atividade', $this->Atividade->find('first', $options));
 	}
 
 	public function add($materia_id = null) {
 		if (!empty($this->data)) {
-
 			$this->Atividade->create();
-			
-			//$data['materia_id']=1;
-
-			
+			$this->request->data['Atividade']['usuario_id'] = intval($this->Auth->user('id'));
 			if ($this->Atividade->save($this->data)) {
 				$this->Session->setFlash(__('The atividade has been saved.'));
 				//$log = $this->Atividade->getDataSource()->getLog(false, false);debug($log);
 				return $this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The atividade could not be saved. Please, try again.'));
+				$this->Session->setFlash(__('A atividade não pode ser salva. Tente novamente'));
 			}
 		}
 
@@ -73,8 +70,10 @@ class AtividadesController extends AppController {
 		} else {
 			$options = array('conditions' => array('Atividade.' . $this->Atividade->primaryKey => $id));
 			$this->request->data = $this->Atividade->find('first', $options);
+			debug($this->request->data);
 		}
-
+		$materias = $this->Aluno->Materias->find('list');
+		$this->set(compact('materias'));
 	}
 
 	public function delete($id = null) {
@@ -96,4 +95,5 @@ class AtividadesController extends AppController {
 	    $this->response->file('img/'.$file.'.'.$ext);
 	    return $this->response;
 	}
+
 }
