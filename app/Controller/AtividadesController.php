@@ -15,16 +15,14 @@ class AtividadesController extends AppController {
 		$this->set('atividades', $this->Atividade->find('all'));
 	}
 
-	public function searchTag($id)
+	public function searchTag($id, $tag)
 	{
 		
 		$conditions = array(     		
 	    		array('AtividadeTag.tag_id' => $id)
         	);		
 		$atividades = $this->Atividade->AtividadeTag->find('all', array('conditions' => $conditions));
-		$this->loadModel('Materia');
-		$materias = $this->Materia->find('list');
-		$tag = $atividades[0]['Tag']['nome'];
+		$materias = $this->Atividade->Materia->find('list');
 		$this->set(compact('atividades', 'materias', 'tag'));
 	}
 	
@@ -94,6 +92,13 @@ class AtividadesController extends AppController {
 		$this->autoRender->false;
 	    $this->response->file('img/'.$file.'.'.$ext);
 	    return $this->response;
+	}
+
+	public function minhasAtividades()
+	{
+		$options['conditions'] = array('Atividade.usuario_id' => $this->Auth->user('id'));
+		$atividades = $this->Atividade->find('all', $options);
+		$this->set(compact('atividades'));
 	}
 
 }

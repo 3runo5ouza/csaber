@@ -56,9 +56,7 @@
 						$atividade['Atividade']['arquivo'], $atividade['Atividade']['ext']));
 		?>
 	</div>
+
 </div>
-
-
-
 </div>
 </div>

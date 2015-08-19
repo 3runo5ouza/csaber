@@ -1,6 +1,6 @@
 <?php echo $this->element('sidebar'); ?>
 <div class="col-md-6">
-	<h2><?php echo __('Atividades'); ?></h2>
+	<h2><?php echo __('Minhas Atividades'); ?></h2>
 	<table class="table">
 	<tr>
 		<th>Nome</th>
