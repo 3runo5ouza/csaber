@@ -6,20 +6,18 @@
 		<th>Nome</th>
 		<th>Ano</th>
 		<th>Matéria</th>
-		<th>Ações</th>
 	</tr>
 	<?php foreach ($atividades as $atividade): ?>
+		<?php $a = $atividade['Atividade'] ?>
 	
 	<tr>
-		<td><?php echo h($atividade['Atividade']['nome']); ?>&nbsp;</td>
-		<td><?php echo h($atividade['Atividade']['ano']).'º ano'; ?>&nbsp;</td>
+		<td><?php echo $this->Html->link($a['nome'], array('action' => 'view', $a['id'])); ?></td>
+		<td><?php echo h($a['ano']).'º ano'; ?>&nbsp;</td>
 		<td>
-			<?php echo $this->Html->link($atividade['Materia']['nome'], array('controller' => 'materias', 'action' => 'view', $atividade['Materia']['id'])); ?>
-		</td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('Ver'), array('action' => 'view', $atividade['Atividade']['id'])); ?>
-			<?php echo $this->Html->link(__('Editar'), array('action' => 'edit', $atividade['Atividade']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Apagar'), array('action' => 'delete', $atividade['Atividade']['id']), array(), __('Are you sure you want to delete # %s?', $atividade['Atividade']['id'])); ?>
+			<?php echo $this->Html->link(
+					$materias[$a['materia_id']],
+					array('controller' => 'atividades',
+							'action' => 'listaMateria', $a['materia_id'], $materias[$a['materia_id']])); ?>
 		</td>
 	</tr>
 	<?php endforeach; ?>

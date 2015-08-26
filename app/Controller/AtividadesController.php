@@ -7,23 +7,31 @@ class AtividadesController extends AppController {
 
 	public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('add', 'view', 'index', 'searchTag');
+        $this->Auth->allow('view', 'index');
     }
 
 	public function index() {
         $this->Atividade->recursive = 0;
-		$this->set('atividades', $this->Atividade->find('all'));
+        $atividades = $this->Atividade->find('all');
+		$materias = $this->Atividade->Materia->find('list');
+		$this->set(compact('atividades', 'materias'));
 	}
 
-	public function searchTag($id, $tag)
+	public function listaTag($id, $tag)
 	{
-		
-		$conditions = array(     		
-	    		array('AtividadeTag.tag_id' => $id)
-        	);		
+		$conditions = array(array('AtividadeTag.tag_id' => $id));		
 		$atividades = $this->Atividade->AtividadeTag->find('all', array('conditions' => $conditions));
+		$usuarios = $this->Atividade->Usuario->find('list');
 		$materias = $this->Atividade->Materia->find('list');
-		$this->set(compact('atividades', 'materias', 'tag'));
+		$this->set(compact('atividades', 'materias', 'tag', 'usuarios'));
+	}
+
+	public function listaMateria($id, $materia)
+	{
+		$conditions = array(array('Atividade.materia_id' => $id));
+		$usuarios = $this->Atividade->Usuario->find('list');
+		$atividades = $this->Atividade->find('all', array('conditions' => $conditions));
+		$this->set(compact('atividades', 'materia', 'usuarios'));
 	}
 	
 	public function view($id = null) {
@@ -88,10 +96,20 @@ class AtividadesController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 
-	public function sendFile($file, $ext) {
+	public function sendFile($file) {
 		$this->autoRender->false;
-	    $this->response->file('img/'.$file.'.'.$ext);
+	    $this->response->file('img/'.$file);
 	    return $this->response;
+	}
+
+	public function favoritar($atividade) {
+		//TODO: Arrumar esta bagaça
+		$this->autoRender->false;
+	    /*$this->Atividade->Favorita->create();
+	    $this->request->data['Favorita']['usuario_id'] = intval($this->Auth->user('id'));
+	    $this->request->data['Favorita']['atividade_id'] = $atividade;
+		$this->Atividade->Favorita->save($this->data);*/
+	    return ;
 	}
 
 	public function minhasAtividades()

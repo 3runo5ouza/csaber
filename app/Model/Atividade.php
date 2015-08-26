@@ -6,6 +6,25 @@ class Atividade extends AppModel {
 
 
 	//public $actsAs = array('Containable');
+
+	public $validate = array(
+		'nome' => array(
+			'notEmpty' => array(
+				'rule' => 'notEmpty',
+				'message' => 'O nome da atividade é obrigatório!',
+				)
+			),
+		'ano' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				),
+			),
+		'materia_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				),
+			),
+		);
 	
 	public $belongsTo = array(
 		'Materia' => array(
@@ -49,7 +68,7 @@ class Atividade extends AppModel {
 
 	public function beforeSave($options = array())
 	{
-		// faz upload do arquivo antes de salvar os dados da atividade enviada no banco
+		// faz upload do arquivo antes de salvar os dados da atividade enviada ao banco
 		$data = $this->data['Atividade'];
 		if(move_uploaded_file($data['arquivo']['tmp_name'], IMAGES.$data['arquivo']['name']))
 		{
