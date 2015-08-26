@@ -11,13 +11,14 @@ class UsuariosController extends AppController {
         $this->Auth->allow('add', 'logout');
     }
 
+    public function isAuthorized($user){
+        
+        return true;
+    }
+
     public function login() {
-        debug($this->Auth->login());
-        if ($this->request->is('post')) {
-            if ($this->Auth->login()) {
-                return $this->redirect($this->Auth->redirectUrl());
-            }
-            $this->Session->setFlash(__('Invalid username or password, try again'));
+        if ($this->Auth->login()) {
+            $this->redirect($this->Auth->redirect());
         }
     }
 
@@ -33,7 +34,7 @@ class UsuariosController extends AppController {
     }
 
     public function view($id = null) {
-        $this->User->id = $id;
+        $this->Usuario->id = $id;
         if (!$this->User->exists()) {
             throw new NotFoundException(__('Invalid user'));
         }
@@ -55,12 +56,12 @@ class UsuariosController extends AppController {
     }
 
     public function edit($id = null) {
-        $this->User->id = $id;
-        if (!$this->User->exists()) {
+        $this->Usuario->id = $id;
+        if (!$this->Usuario->exists()) {
             throw new NotFoundException(__('Invalid user'));
         }
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->User->save($this->request->data)) {
+            if ($this->Usuario->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved'));
                 return $this->redirect(array('action' => 'index'));
             }
@@ -68,7 +69,7 @@ class UsuariosController extends AppController {
                 __('The user could not be saved. Please, try again.')
             );
         } else {
-            $this->request->data = $this->User->read(null, $id);
+            $this->request->data = $this->Usuario->read(null, $id);
             unset($this->request->data['User']['password']);
         }
     }
@@ -79,11 +80,11 @@ class UsuariosController extends AppController {
 
         $this->request->allowMethod('post');
 
-        $this->User->id = $id;
-        if (!$this->User->exists()) {
+        $this->Usuario->id = $id;
+        if (!$this->Usuario->exists()) {
             throw new NotFoundException(__('Invalid user'));
         }
-        if ($this->User->delete()) {
+        if ($this->Usuario->delete()) {
             $this->Session->setFlash(__('User deleted'));
             return $this->redirect(array('action' => 'index'));
         }

@@ -22,36 +22,41 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-    public $components = array(
-    	'Auth' => array(
-            'loginRedirect' => array(
-                'controller' => 'usuarios',
-                'action' => 'login'
-            ),
-            'logoutRedirect' => array(
-                'controller' => 'usuarios',
-                'action' => 'login',
-                'home'
-            ),
-            'authenticate' => array(
-                'Form' => array(
-                    'passwordHasher' => 'Blowfish',
-                    'userModel' => 'Usuario',
-                    'password' => 'senha',
-                    'user' => 'nome'
-                )
-            )
-        ),
-    	'DebugKit.Toolbar',
-        'Session'
-    );
+
+
     public $helpers = array('Form', 'Html', 'Js');
 
-    public function beforeFilter() { 
-        $this->loadModel('Usuario');
-		$this->Auth->userModel = 'Usuario';
-		$this->Auth->loginAction = array('admin' => false, 'controller' => 'usuarios', 'action' => 'login');
-        $this->Auth->allow('index', 'view');
+    public $components = array(
+        //'DebugKit.Toolbar',
+        'Session',
+        'Auth' => array(
+            'authError' => 'Você precisa estar logado para ver isso.',
+            'authenticate' => array(
+                'Form' => array(
+                    'userModel' => 'Usuario',
+                    'fields' => array('username' => 'nome','password' => 'senha'),
+                    'passwordHasher' => array('className' => 'Simple','hashType' => 'sha256'),
+                )
+            ),
+            'loginAction' => array('controller' => 'usuarios', 'action' => 'login'),
+            'loginRedirect' => array('controller' => 'atividades', 'action' => 'index'),
+            'logoutRedirect' => array('controller' => 'usuarios', 'action' => 'login')
+        )
+    );
+
+    public function isAuthorized($user) {
+        debug('opa');
+        // Admin can access every action
+        if (isset($usuario['papel']) && $usuario['papel'] === 'admin') {
+            return true;
+        }
+        // Default deny
+        return true;
+    }
+
+    public function beforeFilter() {
+		parent::beforeFilter();
+        $this->Auth->allow('index');
 	}
 } 
     

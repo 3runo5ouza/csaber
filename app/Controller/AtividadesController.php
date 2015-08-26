@@ -7,49 +7,52 @@ class AtividadesController extends AppController {
 
 	public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('add', 'view', 'index', 'searchTag');
+        $this->Auth->allow('view', 'index');
     }
 
 	public function index() {
         $this->Atividade->recursive = 0;
-		$this->set('atividades', $this->Atividade->find('all'));
+        $atividades = $this->Atividade->find('all');
+		$materias = $this->Atividade->Materia->find('list');
+		$this->set(compact('atividades', 'materias'));
 	}
 
-	public function searchTag($id)
+	public function listaTag($id, $tag)
 	{
-		
-		$conditions = array(     		
-	    		array('AtividadeTag.tag_id' => $id)
-        	);		
+		$conditions = array(array('AtividadeTag.tag_id' => $id));		
 		$atividades = $this->Atividade->AtividadeTag->find('all', array('conditions' => $conditions));
-		$this->loadModel('Materia');
-		$materias = $this->Materia->find('list');
-		$tag = $atividades[0]['Tag']['nome'];
-		$this->set(compact('atividades', 'materias', 'tag'));
+		$usuarios = $this->Atividade->Usuario->find('list');
+		$materias = $this->Atividade->Materia->find('list');
+		$this->set(compact('atividades', 'materias', 'tag', 'usuarios'));
+	}
+
+	public function listaMateria($id, $materia)
+	{
+		$conditions = array(array('Atividade.materia_id' => $id));
+		$usuarios = $this->Atividade->Usuario->find('list');
+		$atividades = $this->Atividade->find('all', array('conditions' => $conditions));
+		$this->set(compact('atividades', 'materia', 'usuarios'));
 	}
 	
 	public function view($id = null) {
 		if (!$this->Atividade->exists($id)) {
 			throw new NotFoundException(__('Invalid atividade'));
 		}
+
 		$options = array('conditions' => array('Atividade.' . $this->Atividade->primaryKey => $id));
 		$this->set('atividade', $this->Atividade->find('first', $options));
 	}
 
 	public function add($materia_id = null) {
 		if (!empty($this->data)) {
-
 			$this->Atividade->create();
-			
-			//$data['materia_id']=1;
-
-			
+			$this->request->data['Atividade']['usuario_id'] = intval($this->Auth->user('id'));
 			if ($this->Atividade->save($this->data)) {
 				$this->Session->setFlash(__('The atividade has been saved.'));
 				//$log = $this->Atividade->getDataSource()->getLog(false, false);debug($log);
 				return $this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The atividade could not be saved. Please, try again.'));
+				$this->Session->setFlash(__('A atividade não pode ser salva. Tente novamente'));
 			}
 		}
 
@@ -73,8 +76,10 @@ class AtividadesController extends AppController {
 		} else {
 			$options = array('conditions' => array('Atividade.' . $this->Atividade->primaryKey => $id));
 			$this->request->data = $this->Atividade->find('first', $options);
+			debug($this->request->data);
 		}
-
+		$materias = $this->Aluno->Materias->find('list');
+		$this->set(compact('materias'));
 	}
 
 	public function delete($id = null) {
@@ -91,9 +96,27 @@ class AtividadesController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 
-	public function sendFile($file, $ext) {
+	public function sendFile($file) {
 		$this->autoRender->false;
-	    $this->response->file('img/'.$file.'.'.$ext);
+	    $this->response->file('img/'.$file);
 	    return $this->response;
 	}
+
+	public function favoritar($atividade) {
+		//TODO: Arrumar esta bagaça
+		$this->autoRender->false;
+	    /*$this->Atividade->Favorita->create();
+	    $this->request->data['Favorita']['usuario_id'] = intval($this->Auth->user('id'));
+	    $this->request->data['Favorita']['atividade_id'] = $atividade;
+		$this->Atividade->Favorita->save($this->data);*/
+	    return ;
+	}
+
+	public function minhasAtividades()
+	{
+		$options['conditions'] = array('Atividade.usuario_id' => $this->Auth->user('id'));
+		$atividades = $this->Atividade->find('all', $options);
+		$this->set(compact('atividades'));
+	}
+
 }
