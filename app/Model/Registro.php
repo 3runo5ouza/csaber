@@ -3,46 +3,52 @@
 App::uses('AppModel', 'Model');
 App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 
+class Registro extends AppModel {
 
-class Usuario extends AppModel {
+	public $useTable = 'usuarios';
 
-    public $displayField = 'nome';
-
-    public $validate = array(
+	public $validate = array(
         'nome' => array(
-            'required' => array(
+            'obrigatorio' => array(
                 'rule' => 'notEmpty',
                 'message' => 'Um nome de usuário é obrigatório'
             ),
-            'isUnique' => array(
+            'ehUnico' => array(
                 'rule' => 'isUnique',
                 'message' => 'Esse nome já existe.'
             )
         ),
         'senha' => array(
-            'required' => array(
-                'rule' => array('notEmpty'),
+            'obrigatorio' => array(
+                'rule' => 'notEmpty',
                 'message' => 'A senha é obrigatória'
             )
         ),
         'papel' => array(
-            'valid' => array(
+            'valido' => array(
                 'rule' => array('inList', array('admin', 'autor')),
                 'message' => 'Entre um papel válido',
                 'allowEmpty' => false
             )
+        ),
+        'confirmacao_senha' => array(
+        	'obrigatorio' => array(
+        		'rule' => 'notEmpty',
+        		'message' => 'Coloque sua senha novamente para confirmá-la'
+        	),
+    		'coincide' => array(
+        		'rule' => 'senhaCoincide',
+        		'message' => 'As senhas não coincidem.'
+        	)
         )
     );
 
-    public $hasMany = array(
-        'Atividade' => array(
-            'className' => 'Atividade',
-            'foreignKey' => 'usuario_id',
-            'dependent' => false,
-        )
-    );
+	public function senhaCoincide($check) 
+    {
+        return $this->data[$this->alias]['senha'] === $check['confirmacao_senha']; 
+    } 
 
-    public function beforeSave($options = array()) {
+	public function beforeSave($options = array()) {
         parent::beforeSave($options);
         $passwordHasher = new SimplePasswordHasher(array('hashType' => 'sha256'));
         // hash our password
@@ -58,13 +64,5 @@ class Usuario extends AppModel {
         return true;
     }
 
-    /*public function beforeFind($query = array())
-    {
-        debug($query);
-    }
 
-    public function afterFind($results, $primary = false)
-    {
-        debug($_SESSION);
-    }*/
 }

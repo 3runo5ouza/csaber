@@ -42,16 +42,14 @@ class UsuariosController extends AppController {
     }
 
     public function add() {
+        $this->loadModel('Registro');
+        $this->view = 'login';
         if ($this->request->is('post')) {
-            $this->Usuario->create();
-            // debug($this->Auth->settings); die('foi');
-            if ($this->Usuario->save($this->request->data)) {
+            $this->Registro->create();
+            if ($this->Registro->save($this->request->data)) {
                 $this->Session->setFlash(__('The user has been saved'));
                 return $this->redirect(array('controller' => 'atividades', 'action' => 'index'));
             }
-            $this->Session->setFlash(
-                __('The user could not be saved. Please, try again.')
-            );
         }
     }
 

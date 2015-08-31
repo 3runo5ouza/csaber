@@ -8,5 +8,10 @@
 				<li><?php echo $this->Html->link(__('Listar Matérias'), array('controller' => 'materias', 'action' => 'index')); ?></li>
 				<li><?php echo $this->Html->link(__('Listar Favoritas'), array('controller' => 'favoritas', 'action' => 'index')); ?> </li>
 				<li><?php echo $this->Html->link(__('Listar Tags'), array('controller' => 'tags', 'action' => 'index')); ?></li>
+				<?php 
+				if (AuthComponent::user('id')!=null) {
+					echo '<li>'.$this->Html->link(__('Sair'), array('controller' => 'usuarios', 'action' => 'logout'), array('class'=>'btn-danger')).'</li>';
+				}
+				?>
 			</ul>
 		</nav>
